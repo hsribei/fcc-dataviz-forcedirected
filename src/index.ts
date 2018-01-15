@@ -46,6 +46,14 @@ d3.json(url, function(error, graph) {
     .append("circle")
     .attr("r", nodeRadius);
 
+  const dragHandler = d3
+    .drag()
+    .on("start", dragStart)
+    .on("drag", dragDrag)
+    .on("end", dragEnd);
+
+  dragHandler(node);
+
   simulation.nodes(graph.nodes).on("tick", ticked);
 
   simulation.force("link").links(graph.links);
@@ -66,5 +74,22 @@ d3.json(url, function(error, graph) {
         "cy",
         d => (d.y = Math.max(nodeRadius, Math.min(height - nodeRadius, d.y)))
       );
+  }
+
+  function dragStart(d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragDrag(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  function dragEnd(d) {
+    if (!d3.event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
   }
 });
