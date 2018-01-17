@@ -19,7 +19,7 @@ d3.json(url, function(error, graph) {
   // Give nodes ids
   graph.nodes.forEach((node, i) => (node.id = i));
 
-  const boundingRadius = 400;
+  const boundingRadius = 480;
   const width = boundingRadius * 2,
     height = boundingRadius * 2;
   const nodeRadius = 5;
@@ -27,11 +27,11 @@ d3.json(url, function(error, graph) {
   const simulation = d3
     .forceSimulation()
     .force("link", d3.forceLink().id(d => d.id))
-    .force("charge", d3.forceManyBody().strength(-15))
+    .force("charge", d3.forceManyBody().strength(-150))
     .force("center", d3.forceCenter(boundingRadius, boundingRadius))
     .force(
       "radial",
-      d3.forceRadial(0.0001, boundingRadius, boundingRadius).strength(0.02)
+      d3.forceRadial(0.0001, boundingRadius, boundingRadius).strength(0.1)
     );
 
   const svg = d3
