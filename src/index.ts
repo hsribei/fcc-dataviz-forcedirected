@@ -1,11 +1,20 @@
+declare function require(string): string;
 import "./style.css";
+import "./flags.css";
 import * as d3 from "d3";
+const image = require("./blank.gif");
 
 const url =
   "https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json";
 
 d3.json(url, function(error, graph) {
   if (error) throw error;
+
+  d3
+    .select(".content")
+    .append("img")
+    .attr("src", image)
+    .attr("class", "flag flag-cz");
 
   // Give nodes ids
   graph.nodes.forEach((node, i) => (node.id = i));
