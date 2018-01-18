@@ -1,7 +1,9 @@
 declare function require(string): string;
+
 import "./style.css";
 import "./flags.css";
 import * as d3 from "d3";
+
 const image = require("./blank.gif");
 
 const url =
@@ -10,19 +12,13 @@ const url =
 d3.json(url, function(error, graph) {
   if (error) throw error;
 
-  d3
-    .select(".content")
-    .append("img")
-    .attr("src", image)
-    .attr("class", "flag flag-cz");
-
   // Give nodes ids
   graph.nodes.forEach((node, i) => (node.id = i));
 
+  const nodeRadius = 8;
   const boundingRadius = 480;
   const width = boundingRadius * 2,
     height = boundingRadius * 2;
-  const nodeRadius = 5;
 
   const simulation = d3
     .forceSimulation()
@@ -49,11 +45,18 @@ d3.json(url, function(error, graph) {
   const node = svg
     .append("g")
     .attr("class", "nodes")
-    .selectAll("circle")
+    .selectAll("foreignObject")
     .data(graph.nodes)
     .enter()
-    .append("circle")
-    .attr("r", nodeRadius);
+    .append("foreignObject")
+    .attr("width", 16)
+    .attr("height", 16);
+
+  node
+    .append("xhtml:div")
+    .append("img")
+    .attr("src", image)
+    .attr("class", d => `flag flag-${d.code}`);
 
   const dragHandler = d3
     .drag()
@@ -76,24 +79,32 @@ d3.json(url, function(error, graph) {
 
     node
       .attr(
-        "cx",
-        d => (d.x = Math.max(nodeRadius, Math.min(width - nodeRadius, d.x)))
+        "x",
+        d =>
+          (d.x = Math.max(
+            nodeRadius,
+            Math.min(width - nodeRadius, d.x - nodeRadius)
+          ))
       )
       .attr(
-        "cy",
-        d => (d.y = Math.max(nodeRadius, Math.min(height - nodeRadius, d.y)))
+        "y",
+        d =>
+          (d.y = Math.max(
+            nodeRadius,
+            Math.min(height - nodeRadius, d.y - nodeRadius)
+          ))
       );
   }
 
   function dragStart(d) {
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
+    d.fx = d.x + nodeRadius;
+    d.fy = d.y + nodeRadius;
   }
 
   function dragDrag(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
+    d.fx = d3.event.x + nodeRadius;
+    d.fy = d3.event.y + nodeRadius;
   }
 
   function dragEnd(d) {
