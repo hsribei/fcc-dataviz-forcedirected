@@ -3,13 +3,23 @@ declare function require(string): string;
 import "./style.css";
 import "./flags.css";
 import * as d3 from "d3";
+import { Spinner } from "spin.js";
 
 const image = require("./blank.gif");
 
 const url =
   "https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json";
 
+let spinner;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const content = d3.select("#content");
+  console.log(content.node());
+  spinner = new Spinner({ color: "white" }).spin(content.node());
+});
+
 d3.json(url, function(error, graph) {
+  spinner.stop();
   if (error) throw error;
 
   // Give nodes ids
