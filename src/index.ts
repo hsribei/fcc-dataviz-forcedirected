@@ -59,6 +59,31 @@ d3.json(url, function(error, graph) {
     .attr("src", image)
     .attr("class", d => `flag flag-${d.code}`);
 
+  // Define the div for the tooltip
+  var tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+  node
+    .on("mouseover", d => {
+      tooltip
+        .transition()
+        .duration(200)
+        .style("opacity", 0.95);
+      tooltip
+        .html(`${d.country}`)
+        .style("left", d3.event.pageX + 12 + "px")
+        .style("top", d3.event.pageY + "px");
+    })
+    .on("mouseout", d => {
+      tooltip
+        .transition()
+        .duration(200)
+        .style("opacity", 0);
+    });
+
   const dragHandler = d3
     .drag()
     .on("start", dragStart)
