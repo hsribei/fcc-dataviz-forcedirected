@@ -16,6 +16,7 @@ d3.json(url, function(error, graph) {
   graph.nodes.forEach((node, i) => (node.id = i));
 
   const nodeRadius = 8;
+  const nodeDiameter = nodeRadius * 2;
   const boundingRadius = 480;
   const width = boundingRadius * 2,
     height = boundingRadius * 2;
@@ -72,27 +73,25 @@ d3.json(url, function(error, graph) {
 
   function ticked() {
     link
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y);
+      .attr("x1", d =>
+        Math.max(nodeRadius, Math.min(width - nodeRadius, d.source.x))
+      )
+      .attr("y1", d =>
+        Math.max(nodeRadius, Math.min(height - nodeRadius, d.source.y))
+      )
+      .attr("x2", d =>
+        Math.max(nodeRadius, Math.min(width - nodeRadius, d.target.x))
+      )
+      .attr("y2", d =>
+        Math.max(nodeRadius, Math.min(height - nodeRadius, d.target.y))
+      );
 
     node
-      .attr(
-        "x",
-        d =>
-          (d.x = Math.max(
-            nodeRadius,
-            Math.min(width - nodeRadius, d.x - nodeRadius)
-          ))
+      .attr("x", d =>
+        Math.max(0, Math.min(width - nodeDiameter, d.x - nodeRadius))
       )
-      .attr(
-        "y",
-        d =>
-          (d.y = Math.max(
-            nodeRadius,
-            Math.min(height - nodeRadius, d.y - nodeRadius)
-          ))
+      .attr("y", d =>
+        Math.max(0, Math.min(height - nodeDiameter, d.y - nodeRadius))
       );
   }
 
